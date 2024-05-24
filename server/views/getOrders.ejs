@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get All Orders</title>
+</head>
+<body>
+    <h2>Get All Orders</h2>
+    <form id="getAllOrdersForm">
+        <label for="UserId">User ID:</label>
+        <input type="text" id="UserId" name="UserId" required><br><br>
+        <button type="submit">Get Orders</button>
+    </form>
+    <div id="ordersList"></div>
+
+    <script>
+        const form = document.getElementById("getAllOrdersForm");
+        const ordersList = document.getElementById("ordersList");
+
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+            const userId = formData.get('UserId'); // Get the UserId from form data
+
+            try {
+                const response = await fetch(`http://localhost:3000/getAllOrder`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ UserId: userId }) // Send UserId in JSON format
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch orders');
+                }
+
+                const orders = await response.json();
+                //console.log('Orders:', orders); // Log the orders received from the server
+                displayOrders(orders); // Call a function to display orders
+            } catch (error) {
+                console.error('Error:', error.message);
+                alert('Failed to fetch orders. Please try again later.');
+            }
+        });
+
+        function displayOrders(orders) {
+            ordersList.innerHTML = ''; // Clear previous content
+            
+            orders.forEach(order => {
+                const orderElement = document.createElement('div');
+                orderElement.innerHTML = `
+                    <p>AdsId: ${order.UserId}</p>
+                    <p>UserId: ${order.OrdId}</p>
+                    <hr>
+                `;
+                ordersList.appendChild(orderElement);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Addresses</title>
+</head>
+<body>
+  <input type="text" id="UserId" placeholder="Enter User ID">
+  <button onclick="fetchUserAddresses()">Fetch Addresses</button>
+  <div id="addresses-container"></div>
+
+  <script>
+    async function fetchUserAddresses() {
+      const userId = document.getElementById('UserId').value;
+      try {
+        const response = await fetch('http://localhost:3000/getAddressFromUserId', {
+          method: 'POST', // Change to POST method
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ UserId: userId }) // Pass UserId in the request body
+        });
+        if (!response.ok) {
+          throw new Error('Failed to fetch user addresses');
+        }
+        const addresses = await response.json();
+        const addressesContainer = document.getElementById('addresses-container');
+        addressesContainer.innerHTML = ''; // Clear previous addresses
+        addresses.forEach(address => {
+          const addressHTML = `
+            <div class="address">
+              <h2>Address</h2>
+              <p><strong>Adsid:</strong> ${address.AdsId}</p>
+              <p><strong>Country:</strong> ${address.Country}</p>
+              <p><strong>State:</strong> ${address.State}</p>
+              <p><strong>District:</strong> ${address.District}</p>
+              <p><strong>Street:</strong> ${address.Street}</p>
+              <p><strong>House No:</strong> ${address.HouseNo}</p>
+              <p><strong>Pincode:</strong> ${address.pincode}</p>
+              <p><strong>User ID:</strong> ${address.UserId}</p>
+            </div>
+            <hr>
+          `;
+          addressesContainer.innerHTML += addressHTML;
+        });
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+      }
+    }
+  </script>
+</body>
+</html>

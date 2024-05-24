@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Address</title>
+</head>
+<body>
+  <h2>Create Address</h2>
+  <form id="address-form">
+    <label for="country">Country:</label>
+    <input type="text" id="country" name="Country" required><br><br>
+    
+    <label for="state">State:</label>
+    <input type="text" id="state" name="State" required><br><br>
+    
+    <label for="district">District:</label>
+    <input type="text" id="district" name="District" required><br><br>
+    
+    <label for="street">Street:</label>
+    <input type="text" id="street" name="Street" required><br><br>
+    
+    <label for="houseNo">House No:</label>
+    <input type="text" id="houseNo" name="HouseNo" required><br><br>
+    
+    <label for="pincode">Pincode:</label>
+    <input type="text" id="pincode" name="Pincode" required><br><br>
+    
+    <label for="userId">User ID:</label>
+    <input type="text" id="userId" name="UserId" required><br><br>
+    
+    <button type="submit">Create Address</button>
+  </form>
+
+  <script>
+    document.getElementById('address-form').addEventListener('submit', async function(event) {
+      event.preventDefault(); // Prevent the default form submission
+      
+      // Extract form data
+      const formData = new FormData(this);
+      const data = {};
+      for (const [key, value] of formData.entries()) {
+        data[key] = value;
+      }
+      
+      // Send POST request to create address
+      try {
+        const response = await fetch('http://localhost:3000/createAddress', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to create address');
+        }
+
+        const responseData = await response.json();
+        console.log(responseData); // Log the response from the server
+        alert('Address created successfully!');
+        // You can redirect the user or perform other actions as needed
+      } catch (error) {
+        console.error('Error:', error.message);
+        alert('Failed to create address. Please try again later.');
+      }
+    });
+  </script>
+</body>
+</html>

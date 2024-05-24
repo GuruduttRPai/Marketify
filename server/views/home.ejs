@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details</title>
+  <style>
+    .product-details-container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .product-details {
+      flex: 1 0 300px;
+      margin: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+    .product-image {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="product-details-container" id="product-details-container"></div>
+
+  <script>
+    // Fetch product details from the API
+    fetch('http://localhost:3000/getAllProduct')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(products => {
+        const productDetailsContainer = document.getElementById('product-details-container');
+        products.forEach(product => {
+          const productDetailsHTML = `
+            <div class="product-details">
+              <h2>Product Details</h2>
+              <p><strong>Product ID:</strong> ${product.ProId}</p>
+              <p><strong>Seller ID:</strong> ${product.SellID}</p>
+              <p><strong>Description:</strong> ${product.Discription}</p>
+              <p><strong>Discount:</strong> ${product.Discount}</p>
+              <p><strong>Price:</strong> ${product.Price}</p>
+            </div>
+          `;
+          productDetailsContainer.innerHTML += productDetailsHTML;
+        });
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+  </script>
+</body>
+</html>

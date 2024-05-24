@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details</title>
+  <style>
+    .product-details-container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .product-details {
+      flex: 1 0 300px;
+      margin: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+    .product-image {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <input type="text" id="ProId">
+  <button onclick="dothis()">Find</button>
+  <div class="product-details-container" id="product-details-container"></div>
+
+  <script>
+    // Function to fetch product details and images
+    function dothis() {
+      const productId = document.getElementById('ProId').value;
+      
+      // Fetch product details from the first API
+      fetch(`http://localhost:3000/getProductDetail/${productId}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log(data);
+          // Create product details HTML
+          const productDetailsContainer = document.getElementById('product-details-container');
+          const productDetailsHTML = `
+            <div class="product-details">
+              <h2>Product Details</h2>
+              <p><strong>Product ID:</strong> ${data.ProId}</p>
+              <p><strong>Seller ID:</strong> ${data.SellID}</p>
+              <p><strong>Description:</strong> ${data.Discription}</p>
+              <p><strong>Discount:</strong> ${data.Discount}</p>
+              <p><strong>Price:</strong> ${data.Price}</p>
+            </div>
+          `;
+          productDetailsContainer.innerHTML = productDetailsHTML;
+        })
+        .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+
+      // Fetch product images from the second API
+      fetch(`http://localhost:3000/getProductImg/${productId}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(images => {
+          // Create image elements and append to the product details container
+          const productDetailsContainer = document.getElementById('product-details-container');
+          for (const imageUrl of images) {
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.className = 'product-image';
+            productDetailsContainer.appendChild(img);
+          }
+        })
+        .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+  </script>
+</body>
+</html>

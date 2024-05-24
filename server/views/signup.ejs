@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div>
+        <h1>Sign Up</h1>
+        <form class="form" method="POST" action="/createUser">
+                <input type="text" class="input" id="UserName" name="Name" placeholder="Name">
+                <input type="text" class="input" id="PhoneNumber" name="PhoneNo" placeholder="PhoneNumber">
+                <input type="text" class="input" id="Gender" name="Gender" placeholder="Gender">
+                <input type="password" class="input" id="Password" name="Password" placeholder="Password">
+                <input type="text" class="input" id="DOB" name="DOB" placeholder="data of birth">
+                <input type="email" class="input" id="Email" name="Email" placeholder="Email">
+                <input type="submit" value="Submit">
+        </form>
+        <a href="/login">login</a>
+    </div>
+</body>
+</html>
