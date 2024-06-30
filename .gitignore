@@ -1,4 +1,7 @@
-node_modules/
-.env
+server/node_modules/
+server/.env
+db/node_modules/
+db/.env
+/.env
 *.jpg\n*.jpeg\n*.png\n*.gif
-PRO_IMG/
+PRO_IMG/*
