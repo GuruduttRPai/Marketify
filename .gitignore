@@ -1,0 +1,4 @@
+node_modules/
+.env
+*.jpg\n*.jpeg\n*.png\n*.gif
+PRO_IMG/

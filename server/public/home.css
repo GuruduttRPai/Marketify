@@ -1,0 +1,112 @@
+
+
+body {
+    height: 100vh;
+    background-size: cover;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 30vw;
+    background-color: rgb(0, 0, 0)
+  }
+  
+  .navbar{
+    width: 90vw;
+    height: 10vh;
+    border-radius: 25px;
+    margin-bottom: 20px;
+    font-size: x-large;
+    font-weight: 600;
+    background-color:rgb(16, 16, 16);
+    box-shadow: 0 0 10px rgb(55, 55, 76);
+  }
+
+  .d-flex{
+    height: 60px;
+    width: 500px;
+  }
+
+  #mainDiv {
+    min-height: 80vh;
+    min-width: 90vw;
+    max-height: 80vh;
+    max-width: 90vw;
+    margin: 0 auto;
+    border-radius: 100px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 60px;
+    padding: 20px;
+    overflow: scroll;
+    background-color:rgb(0, 10, 19);
+    box-shadow: 0 0 10px rgb(55, 55, 76);
+  }
+
+  #mainDiv::-webkit-scrollbar{
+    display: none;
+  }
+
+  .item{
+    background-color: rgb(20, 20, 20);
+    color: rgb(216, 215, 215);
+    font-size: x-large;
+    min-width: 550px;
+    min-height: 450px;
+    max-width: 550px;
+    max-height: 450px;
+    border-radius: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    background-size: cover;
+    margin: 5px;
+    text-align: center;
+    overflow: scroll;
+    box-shadow: 0 0 10px rgb(55, 55, 76);
+    scale: 0.95;
+  }
+  .item::-webkit-scrollbar{
+    display: none;
+  }
+  .item>h1{
+    max-height: min-content;
+    margin-bottom: 0px
+  }
+
+  p{
+    font-size: x-large;
+    font-weight:600;
+    max-width: 75%;
+  }
+
+ .item-inner-div{
+    display: flex;
+    justify-content:space-evenly;
+    width: 100%;
+    border-radius: 500px;
+    padding: 0;
+}
+
+.item-inner-div>*{
+  margin: 3px;
+}
+
+a{
+  text-decoration: none;
+  max-height: min-content;
+}
+
+.item>img{
+  min-width: 550px;
+  max-width: 550px;
+  min-height: 300px;
+  max-height: 300px;
+}
+.item:hover{
+  scale: 0.93;
+  box-shadow: 0 0 30px rgb(70, 70, 96);
+}

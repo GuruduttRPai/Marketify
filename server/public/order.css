@@ -1,0 +1,86 @@
+body{
+    background-color: rgb(0, 13, 24);
+}
+#mainDiv{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    min-width: 100vw;
+    min-height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+}
+#addressSelect{
+    min-width: 60vw;
+    min-height: 30vh;
+}
+.innerDiv{
+    color: rgb(255, 255, 255);
+    font-family: Helvetica, sans-serif;
+    background-color: rgba(16, 16, 16, 0.95);
+    border-radius: 50px;
+    box-shadow: 0 0 10px rgb(55, 55, 76);
+    max-width: 40vw;
+    min-width: 1000px;
+    min-height: 700px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#addressInfo{
+    padding: 100px;
+    min-height: 700px;
+}
+#addressInfo>table{
+    margin-left: 5vw;
+    max-width: 600px;
+    font-size: xx-large;
+    background-color: rgb(21, 21, 21);
+    border-radius: 50px;
+    padding: 100px;
+    box-shadow: 0 0 10px rgb(45, 45, 63);
+}
+.newAddressForm>input{
+    background-color: rgb(92, 92, 92);
+    min-width: 20vw;
+    min-height: 80px;
+    margin-bottom: 70px;
+    border-radius: 14px;
+    font-size: x-large;
+    font-weight: 600;
+}
+.products{
+    height: 60vh;
+    margin-bottom: 80px;
+}
+
+
+.table{
+    width: 35vw;
+    font-size: x-large;
+    background-color: rgb(21, 21, 21);
+    border-radius: 50px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgb(32, 32, 45);
+    overflow-y: scroll;
+}
+.tr{
+    width: 300px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 125px;
+}
+h3{
+    text-align: center;
+    width: 175px;
+}
+.table::-webkit-scrollbar{
+    display: none;
+}
+.summary{
+    min-height: 20vh;
+    max-height: 20vh;
+    font-size: x-large;
+}

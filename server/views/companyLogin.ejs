@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div>
+        <h1>Wamazon</h1>
+        <form action="/companyLogin" method="POST">
+            <input type="text" name="CompanyId" placeholder="CompanyId" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="submit" value="Login">
+        </form>
+        <dev>
+            <a href="/signupAsCompany">New user?</a>
+            <a href="/forgotCompanyPassword">Forgot your password?</a>
+        </dev>
+    </div>
+</body>
+</html>

@@ -1,34 +1,3 @@
-@keyframes backgroundChange {
-    0% {
-        background: url('background1.svg') no-repeat center center;
-        background-size: cover;
-    }
-    16% {
-        background: url('background2.svg') no-repeat center center;
-        background-size: cover;
-    }
-    34% {
-        background: url('background3.svg') no-repeat center center;
-        background-size: cover;
-    }
-    50% {
-        background: url('background4.svg') no-repeat center center;
-        background-size: cover;
-    }
-    68% {
-        background: url('background3.svg') no-repeat center center;
-        background-size: cover;
-    }
-    84% {
-        background: url('background2.svg') no-repeat center center;
-        background-size: cover;
-    }
-    100% {
-        background: url('background1.svg') no-repeat center center;
-        background-size: cover;
-    }
-}
-
 body{
     scale: 1.2;
     display: flex;
@@ -36,68 +5,72 @@ body{
     justify-content: center;
     align-content: center;
     height: 100vh;
-    background-color: rgba(131, 181, 67, 0.3);
+    background-color: rgb(0, 7, 14);
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: large;
     overflow: hidden;
 }
 
-body::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    animation: backgroundChange 10s infinite;
-    background-size: cover; /* Ensures the background image covers the entire viewport */
-    opacity: 0.7; /* Adjust the opacity as needed */
-    z-index: -1; /* Ensure it stays behind the content */
-}
-
-div{
-    background-color:rgba(116, 148, 126, 0.7);
+.main_div{
+    background-color: rgb(20, 20, 20);
+    box-shadow: 0 0 10px rgb(55, 55, 76);
+    border-radius: 50px;
+    color: rgb(216, 215, 215);
     align-self: center;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    min-width: 25%;
-    min-height: 30%;
-    border: 1px solid rgba(100, 100, 100,0.8);
-    border-radius: 5%;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    min-width: 40%;
+    min-height: 40%;
     padding: 8px;
 }
-h1{
+.link_div{
+    display: flex;
+    justify-content: space-around;
+}
+h1,h2{
     margin-bottom: 0px;
     padding-left: 20px;
+    color:rgb(136, 177, 215);
 }
-form{
+.main_form{
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: 20px;
     min-height:50%;
 }
-form>input{
+.main_div>form>input,.main_div>form>select,.main_div>form>textarea{
     padding: 20px;
-    background-color: rgba(0, 166, 113, 0.2);
+    background-color: rgb(33, 33, 33);
     border: 1px solid black;
+    color: rgb(255, 255, 255);
+    font-size: large;
 }
-form>input::placeholder{
-    color: rgb(0, 48, 8);
+.main_div>form>input::placeholder{
+    color: rgb(255, 255, 255);
+    font-size: large;
 }
 form>input:hover{
-    box-shadow: 0 0 5px rgba(255,255,0,0.7);
+    box-shadow: 0 0 5px rgba(253, 252, 255, 0.7);
 }
-input[tbody='Username']{
-    color: aliceblue;
+.main_div>form>input[type='submit']{
+    background-color: rgb(43, 75, 100);
+    color: rgb(0, 0, 0);
+    font-size: large;
 }
-input[type='submit']{
-    background-color: rgba(68, 255, 0, 0.362);
-}
-a{
-    color: black;
+.link {
     text-decoration: none;
     padding-left: 20px;
+    color: rgb(220, 220, 255);
+    font-size: large;
+}
+table{
+    padding-left: 20px;
+}
+
+th{
+    font-size: larger;
+    text-align: center;
+    color: rgb(255, 255, 255);
 }

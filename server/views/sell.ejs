@@ -4,71 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Information</title>
+    <link rel="stylesheet" href="login.css">
 </head>
 <body>
-    <h2>Product Information Form</h2>
-    <form action="http://localhost:3000/sellProduct" method="post" enctype="multipart/form-data" class="form">
-        <label for="SellerId">Seller ID:</label>
-        <input type="text" id="SellerId" name="SellerId" required><br><br>
-
-        <label for="Description">Description:</label><br>
-        <textarea id="Description" name="Description" rows="4" cols="50" required></textarea><br><br>
-
-        <label for="Discount">Discount:</label>
-        <input type="text" id="Discount" name="Discount" required><br><br>
-
-        <label for="Price">Price:</label>
-        <input type="text" id="Price" name="Price" required><br><br>
-
-        <label for="ProductType">Product Type:</label>
-        <select id="ProductType" name="pt">
-            <option value="furniture">Furniture</option>
-            <option value="vehicle">Vehicle</option>
-            <option value="toys">Toys</option>
-        </select><br><br>
-
-        <label for="Color">Color:</label>
-        <select id="Color" name="color">
-            <option value="red">Red</option>
-            <option value="black">Black</option>
-            <option value="white">White</option>
-            <!-- Add more color options as needed -->
-        </select><br><br>
-
-        <label for="ProductImages">Upload Product Images:</label>
-        <input type="file" id="ProductImages" name="files" multiple><br><br>
-
-        <button type="submit">Submit</button>
-    </form>
-    <script>
-        const myform = document.querySelector("form");
-        const files = document.getElementById("ProductImages");
-        myform.addEventListener('submit', async event => {
-            event.preventDefault();
-            const formData = new FormData(myform);
-            console.log(files.files.length);
-            for (let i = 0; i < files.files.length; i++) {
-                formData.append("files", files.files[i]);
-            }
-            try {
-                const response = await fetch('http://localhost:3000/sellProduct', {
-                    method: 'POST',
-                    body: formData // Send formData directly
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to sell product');
-                }
-
-                const responseData = await response.json();
-                console.log(responseData); // Log the response from the server
-                alert('Product sold successfully!');
-                myform.reset(); // Reset the form after successful submission
-            } catch (error) {
-                console.error('Error:', error.message);
-                alert('Failed to sell product. Please try again later.');
-            }
-        });
-    </script>
+    <div class="main_div">
+        <h1>Product Information Form</h1>
+        <form action="/sellProduct" method="post"  enctype="multipart/form-data" class="main_form">
+            <input type="text" id="SellerId" name="SellerId" required placeholder="SellerId">
+            <input type="text" id="Name" name="Name" required placeholder="Product name">
+            <textarea id="Description" name="Description" required placeholder="Description"></textarea>
+            <input type="text" id="Discount" name="Discount" required placeholder="Discount">
+            <input type="text" id="Price" name="Price" required placeholder="Price">
+            <input type="text" id="Stock" name="Stock" required placeholder="Stock">
+            <input type="file" id="ProductImages" name="files" multiple placeholder="Uplode Product Images">
+            <input type="submit" value="Submit"></input>
+        </form>
+    </div>
 </body>
 </html>

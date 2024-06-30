@@ -3,84 +3,243 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Product Details</title>
-  <style>
-    .product-details-container {
-      display: flex;
-      flex-wrap: wrap;
-    }
-    .product-details {
-      flex: 1 0 300px;
-      margin: 10px;
-      padding: 10px;
-      border: 1px solid #ccc;
-    }
-    .product-image {
-      width: 100%;
-      margin-bottom: 10px;
-    }
-  </style>
+  <% if (info) { %>
+    <title>Product Details - <%= info.Name %></title>
+  <% } else { %>
+    <title>Product Details - (Loading...)</title>
+  <% } %>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="viewProduct.css">
 </head>
+<style>
+    body{
+        background-color:rgba(0, 13, 24, 0.61);
+        color: aliceblue;
+        font-family: Helvetica, sans-serif;
+        font-size: x-large;
+    }
+    .product-detail-container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgb(0, 13, 24);
+    }
+    #carousel_div{
+      min-width: 45VW;
+      min-height: 90vh;
+      max-width: 45VW;
+      max-height: 90vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(17, 17, 17, 0.78);
+      border-radius: 50px;
+      box-shadow: 0 0 10px rgb(55, 55, 76);
+    }
+    .carousel{
+        min-width: 40VW;
+        min-height: 80vh;
+        max-width: 40VW;
+        max-height: 80vh;
+        
+    }
+    .product-info{
+        min-width: 50vw;
+        min-height: 100vh;
+        max-width: 50vw;
+        max-height: 100vh;
+        background-color: rgba(0, 13, 24, 0.61);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: scroll;
+    }
+    .product-info::-webkit-scrollbar{
+    display: none;
+  }
+    .product-info>*{
+      margin: 20px;
+    }
+    p{
+      max-width: 40vw;
+    }
+    .inner_div{
+      min-width: 40vw;
+      display: flex;
+      justify-content: space-between;
+    }
+    #comments{
+      background-color: rgba(9, 8, 11, 0.65);
+      min-width: 45vw;
+      border-radius: 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 50px;
+      overflow: scroll;
+      box-shadow: 0 0 10px rgb(55, 55, 76);
+    }
+    #comments::-webkit-scrollbar{
+    display: none;
+  }
+    #comments>p,#comments>form{
+      color: aliceblue;
+      background-color: rgb(27, 27, 27);
+      min-width: 40vw;
+      min-height: 100px;
+      border-radius: 50px;
+      margin: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 50px;
+    }
+    .inner-product-info>form>input{
+      min-width: 30vw;
+      min-height: 10px;
+      background-color: rgb(82, 82, 82);
+    }
+    .inner-product-info{
+      background-color: rgba(17, 17, 17, 0.705);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 45vw;
+      border-radius: 50px;
+      box-shadow: 0 0 10px rgb(55, 55, 76);
+    }
+    .inner-product-info>*{
+      padding: 25px;
+    }
+    .star-rating {
+      margin: 10px;
+      padding: 6px;
+      border-radius: 10px;
+      background-color: rgb(67, 67, 67);
+    font-size: 2rem;
+    direction: ltr; /* Ensure left-to-right direction */
+}
+
+.star {
+    cursor: pointer;
+    color: lightgray;
+    transition: color 0.2s;
+}
+
+
+.star.selected {
+    color: gold;
+}
+</style>
+
 <body>
-  <input type="text" id="ProId">
-  <button onclick="dothis()">Find</button>
-  <div class="product-details-container" id="product-details-container"></div>
-
-  <script>
-    // Function to fetch product details and images
-    function dothis() {
-      const productId = document.getElementById('ProId').value;
-      
-      // Fetch product details from the first API
-      fetch(`http://localhost:3000/getProductDetail/${productId}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log(data);
-          // Create product details HTML
-          const productDetailsContainer = document.getElementById('product-details-container');
-          const productDetailsHTML = `
-            <div class="product-details">
-              <h2>Product Details</h2>
-              <p><strong>Product ID:</strong> ${data.ProId}</p>
-              <p><strong>Seller ID:</strong> ${data.SellID}</p>
-              <p><strong>Description:</strong> ${data.Discription}</p>
-              <p><strong>Discount:</strong> ${data.Discount}</p>
-              <p><strong>Price:</strong> ${data.Price}</p>
+  <div class="product-detail-container">
+    
+      <%if(images && images.length>0){%>
+      <div id="carousel_div">
+        <div id="carouselExampleIndicators" class="carousel slide">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <%for(let i=1; i<images.length ; i++){%>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to=<%=i%> aria-label="Slide <%i+1%>"></button>
+              <%}%>
             </div>
-          `;
-          productDetailsContainer.innerHTML = productDetailsHTML;
-        })
-        .catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
-        });
+            <div class="carousel-inner">
+              <%for(let i=0; i<images.length ; i++){%>
+                <div class="carousel-item active">
+                    <img src=<%=images[i]%> style="min-height: 80vh; min-width: 40vw;max-height: 80vh; max-width: 40vw;" class="d-block w-100" alt="image<%=i%>">
+                </div>
+              <%}%>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+      <%}%>
 
-      // Fetch product images from the second API
-      fetch(`http://localhost:3000/getProductImg/${productId}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(images => {
-          // Create image elements and append to the product details container
-          const productDetailsContainer = document.getElementById('product-details-container');
-          for (const imageUrl of images) {
-            const img = document.createElement('img');
-            img.src = imageUrl;
-            img.className = 'product-image';
-            productDetailsContainer.appendChild(img);
-          }
-        })
-        .catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
+    <div class="product-info">
+      <div class="inner-product-info">
+      <h2><%= info.Name %></h2>
+      <p><%= info.Discription %></p>
+      <div class="inner_div">
+        <%if(info.Discount>0){%>
+          <h2>Price: <del><small><%= info.Price %></small></del> <%= info.Price *(1-info.Discount) %></h2>
+        <%} else{%>
+        <h2>Price:<%= info.Price %></h2>
+        <%}%>
+        <p>Stock: <%= info.Stock %></p>
+        <h4>ratting: 4.3</h4>
+      </div>
+      <form action="/addProductToWishList" method="post"><input type="text" name="UserId" value="<%=UserId%>" hidden><input type="text" name="ProductId" value="<%=info.ProductId%>" hidden><input type="submit" value="Add To Wish List"></form>
+      </div>
+
+
+      <div id="comments">
+        <h1>Comments</h1>
+        <form action="/addReview" method="post">
+          <div class="star-rating">
+            <span class="star" data-value="1">&#9733;</span>
+            <span class="star" data-value="2">&#9733;</span>
+            <span class="star" data-value="3">&#9733;</span>
+            <span class="star" data-value="4">&#9733;</span>
+            <span class="star" data-value="5">&#9733;</span>
+          </div>
+          <input type="text" name="UserId" value="<%=UserId%>" hidden>
+          <input type="text" name="ProductId" value="<%=info.ProductId%>" hidden>
+          <input type="text" name="Comment" placeholder="comment">
+          <input type="text" name="Ratting" id='Ratting' hidden>
+          <input type="submit" value="Comment">
+        </form>
+        <%for(let comment of comments){%>
+          <p><%=comment.Comment%></p>
+        <%}%>
+      </div>
+    </div>
+
+
+  </div>
+</body>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const stars = document.querySelectorAll('.star');
+    
+    stars.forEach(star => {
+        star.addEventListener('click', setRating);
+    });
+    
+    function setRating(e) {
+        resetRating();
+        const clickedStar = e.target;
+        const rating = parseInt(clickedStar.getAttribute('data-value'));
+        
+        stars.forEach(star => {
+            if (parseInt(star.getAttribute('data-value')) <= rating) {
+                star.classList.add('selected');
+            } else {
+                star.classList.remove('selected');
+            }
+        });
+        document.getElementById('Ratting').value=String(rating);
+        console.log(`Rating is: ${rating} = ${document.getElementById('Ratting').value}`);
+    }
+    
+    
+    
+    function resetRating() {
+        stars.forEach(star => {
+            star.classList.remove('selected');
         });
     }
-  </script>
-</body>
+});
+
+</script>
 </html>

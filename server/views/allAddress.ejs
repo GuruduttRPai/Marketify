@@ -14,7 +14,7 @@
     async function fetchUserAddresses() {
       const userId = document.getElementById('UserId').value;
       try {
-        const response = await fetch('http://localhost:3000/getAddressFromUserId', {
+        const response = await fetch('http://localhost:3000/getAddress', {
           method: 'POST', // Change to POST method
           headers: {
             'Content-Type': 'application/json'

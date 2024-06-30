@@ -1,5 +1,5 @@
 import express, { json } from 'express';
-import { getUsers, getUserFormUserId, createUser,getSellers, getSellerFormSellId, createSeller, getColors,getCatogorys, sellProduct,getProduct,getAllProduct, createAddress, getAddressFromUserId,createOrder,addProductToOrder,getAllOrders, getAllProductOfOrder } from '../db/database.js';
+import { getUsers, getUserFormId, updateUser, createUser, getAllProducts,getProduct,sellProduct,addProductToWishList,createAddress,getWishList,getAddressFromUserId,addReview,getReview,createOrder,addProductToOrder,removeFromWishList,getAllCatagorys,getProductsByCatagory,getOrdersByUser,getProductsOfSeller,getProductInsites,getAllProductOfOrder} from '../db/database.js';
 import uniqueIdGenerator from '@olaf-wilkosz/unique-id-generator';
 import bodyParser from 'body-parser';
 import multer from 'multer';
@@ -7,14 +7,16 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 import morgan from 'morgan';
+import nodemailer from 'nodemailer';
+import Chart from 'chart.js/auto';
+import { Console } from 'console';
 dotenv.config();
 
-var uplodes = multer({dest: "\IMG_TEMP"})
 
 const createFolderIfNotExists = (folderPath) => {
-    // Check if the folder exists
+
     if (!fs.existsSync(folderPath)) {
-        // If it doesn't exist, create the folder
+
         fs.mkdirSync(folderPath);
         console.log(`Folder created at ${folderPath}`);
     } else {
@@ -28,6 +30,7 @@ app.use(express.static('./public'));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(morgan('tiny'));
+
 app.get('/signup',(req,res)=>{
     res.render('signup.ejs');
 })
@@ -35,88 +38,102 @@ app.get('/signup',(req,res)=>{
 app.get('/login',(req,res)=>{
     res.render('login.ejs');
 })
-app.get('/cAddress',(req,res)=>{
-    res.render('createAddress.ejs');
+app.post('/createNewAddress',(req,res)=>{
+    res.render('createAddress.ejs',{'UserId':req.body.UserId});
 })
-app.get('/allAddress',(req,res)=>{
-    res.render('allAddress.ejs');
-})
-app.get('/getOrders',(req,res)=>{
-    res.render('getOrders.ejs');
-})
-app.get('/signupAsSeller',(req,res)=>{
-    res.render('signupAsSeller.ejs');
-})
-app.get('/sell',(req,res)=>{
-    res.render('sell.ejs');
-})
-app.get('/seeProduct',(req,res)=>{
-    res.render('viewProduct.ejs');
-})
-app.get('/allProducts',(req,res)=>{
-    res.render('home.ejs');
-})
-app.get('/addProduct',(req,res)=>{
-    res.render('ProToOrd.ejs')
-})
-app.get('/getporInOrd',(req,res)=>{
-    res.render('ProInOrd.ejs');
-})
-//User related api ********************************************************************************************************
-app.post('/login', async (req, res) => {
-    console.log(req.body);
-    res.status(200).send('ok')
+app.post('/sell',(req,res)=>{
+    res.render('sell.ejs',{SellerType:req.params.SellerType});
 });
+
+app.post('/createOrder',async(req,res)=>{
+    const addresses = await getAddresses(req.body.UserId)
+    const products =await getWishList(req.body.UserId);
+    res.render('order.ejs',{'UserId':req.body.UserId,'Addresses':addresses,'products':products});
+});
+//User related api ********************************************************************************************************
+async function renderProfile(UserId){
+    const user = await getUserFormId(UserId);
+    const orders = await getOrdersByUser(UserId);
+    const productCatagory = await getAllCatagorys();
+    const productsSoled = await getProductsOfSeller(UserId);
+    let orderDetails={}
+    let productInsites={}
+
+    for(let order of orders){
+        orderDetails[order.OrderId]= await getAllProductOfOrder(order.OrderId);
+    }
+
+    for(let product of productsSoled){
+        let productInsit = await getProductInsites(product.ProductId,2024);
+        let temp=[0,0,0,0,0,0,0,0,0,0,0,0]
+        for(let item of productInsit){
+            temp[item.Month]=item.quantity
+        }
+        productInsites[product.ProductId] = temp;
+    }
+
+    return {...user[0],...{'Orders':orders, 'catagoryes':productCatagory, 'productsSoled':productsSoled,'productInsites':productInsites,'orderDetails':orderDetails}}
+}
+
+app.post('/login', async (req, res) => {
+    const user = await getUserFormId(req.body.username)
+    if(user[0].Password == req.body.password){
+        res.render('profile.ejs',await renderProfile(user[0].UserId))
+    }
+    else
+        res.status(404).send('Incorrect userId or Password')
+});
+
+app.post('/profile', async(req,res)=>{
+    res.render('profile.ejs',await renderProfile(req.body.UserId))
+})
 app.get('/getUsers', async (req, res) => {
     const ans = await getUsers();
     res.send(ans);
 });
-app.get('/getUserFormUserId/:UserId', async (req, res) => {
-    const UserId = req.params.UserId;
-    const ans = await getUserFormUserId(UserId);
-    res.send(ans);
+app.get('/forgotPassword',(req,res)=>{
+    res.render('forgotPassword.ejs')
+})
+async function sendMail(to,subject,message){
+    dotenv.config();
+    const transport = nodemailer.createTransport({
+        host:'smtp.gmail.com',
+        port:465,
+        secure:true,
+        auth:{
+            user:process.env.EMAIL_ID,
+            pass:process.env.EMAIL_PASS
+        }
+    });
+    const info = await transport.sendMail({
+        from:process.env.EMAIL_ID,
+        to:to,
+        subject:subject,
+        html:message
+    });
+}
+
+app.post('/resendPassword',async (req,res)=>{
+    const user =await getUserFormId(req.body.UserId)
+    await sendMail(user[0].Email,'Password Recovery','password: '+user[0].Password);
+    res.status(400).render('login.ejs');
 });
+
 app.post('/createUser', async (req, res) => {
     const UserId = uniqueIdGenerator(20);
     try {
-        console.log(UserId, req.body.Name, req.body.PhoneNo, req.body.Gender, req.body.Password, req.body.DOB, req.body.Email);
-        const ans = await createUser(UserId, req.body.Name, req.body.PhoneNo, req.body.Gender, req.body.Password, req.body.DOB, req.body.Email);
+            const ans = await createUser(UserId, req.body.Name, req.body.PhoneNo, req.body.Gender, req.body.Password, req.body.DOB, req.body.Email);
         res.status(200).send(ans);
     } catch (error) {
         console.error('Error creating user:', error);
         res.status(500).send('Internal Server Error');
     }
 });
-//Seller related api ********************************************************************************************************
-app.get('/getSellers', async (req, res) => {
-    const ans = await getSellers();
-    res.send(ans);
+app.post('/updateUser',async (req,res)=>{
+    const user = await updateUser(req.body.UserId, req.body.Name, req.body.PhoneNo, req.body.Gender, req.body.DOB, req.body.Email)
+    res.render('profile.ejs',{user,})
 });
-app.get('/getSellerFormSellId/:SellId', async (req, res) => {
-    const SellId = req.params.SellId;
-    const ans = await getSellerFormSellId(SellId);
-    res.send(ans);
-});
-app.post('/createSeller', async (req, res) => {
-    const SellId = uniqueIdGenerator(20);
-    const { Name, PhoneNo, Gender, Password, DOB, Email } = req.body; 
-    try {
-        const ans = await createSeller(SellId, Name, PhoneNo, Gender, Password, DOB, Email);
-        console.log(ans);
-        res.status(200).send(ans);
-    } catch (error) {
-        console.error('Error creating user:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-app.get('/getColors', async (req, res) => {
-    const ans = await getColors();
-    res.send(ans);
-});
-app.get('/getCatogorys', async (req, res) => {
-    const ans = await getCatogorys();
-    res.send(ans);
-});
+
 //Products ********************************************************************************************************
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -127,26 +144,58 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage: storage });
-app.get('/getAllProduct', async (req, res) => {
-    try {
-        const result = await getAllProduct();
-        console.log(result[0]);
-        res.send(result[0]);
-    } catch (error) {
-        console.error('Error fetching all products:', error);
-        res.status(500).send('Internal Server Error');
+
+
+async function get_ProImg (ProductId){
+    const result = await getProduct(ProductId);
+    if (result && result[0] && result[0].hasOwnProperty('Img1')) {
+        const { Img1, Img2, Img3, Img4 } = result[0];
+    
+
+    const imgDir = process.env.IMG_DIR;
+    const imgPaths = [Img1, Img2, Img3, Img4].filter(img => img);
+
+    // Send the images as an array of base64 strings
+    const images = [];
+    for (const imgPath of imgPaths) {
+        const imgPathFull = path.join(imgDir, imgPath);
+        const imgData = fs.readFileSync(imgPathFull);
+        const imgBase64 = imgData.toString('base64');
+        images.push(`data:image/png;base64,${imgBase64}`);
     }
+    return images
+    }
+    else{
+        return null
+    }
+}
+
+
+
+app.post('/',async(req,res)=>{
+    let products=[]
+    if(String(req.body.catagory)=='0'){
+        products =await getAllProducts();
+    }
+    else{
+        products = await getProductsByCatagory(req.body.catagory)
+    }
+    const productCatagory = await getAllCatagorys();
+    for(let i=0; i<products.length ; i++){
+        const images = await get_ProImg(products[i].ProductId)
+        products[i]={'info':products[i],'images':images}
+    }
+    res.render('home.ejs',{'products':  products, 'UserId':req.body.Id,'catagoryes':productCatagory})
 });
+
 app.post('/sellProduct', upload.array('files'), async (req, res) => {
     try {
-        // Handle file upload errors
         if (req.fileValidationError) {
             return res.status(400).json({ error: req.fileValidationError });
         } else if (!req.files || req.files.length === 0) {
             return res.status(400).json({ error: 'No files were uploaded' });
         }
 
-        // Extract filenames of uploaded files
         const filenames = req.files.map(file => file.filename);
         let Img1, Img2, Img3, Img4;
         if (filenames.length >= 1) Img1 = filenames[0];
@@ -154,122 +203,126 @@ app.post('/sellProduct', upload.array('files'), async (req, res) => {
         if (filenames.length >= 3) Img3 = filenames[2];
         if (filenames.length >= 4) Img4 = filenames[3];
 
-        // Generate unique product ID
-        const ProId = uniqueIdGenerator(20);
+        const ProductId = uniqueIdGenerator(20);
         
-        // Extract product details from request body
-        const { SellerId, Description, Discount, Price, pt, color } = req.body;
+        const { Name, Description, Discount, Price, Stock,  SellerType, SellerId} = req.body;
 
-        // Sell the product
-        const result = await sellProduct(ProId, SellerId, Description, Discount, Price, Img1, Img2, Img3, Img4, pt, color);
+        const result = await sellProduct(ProductId,Name, Description, Discount, Price, Stock,  SellerType, SellerId, Img1, Img2, Img3, Img4);
 
-        // Send success response
         res.status(200).json(result);
     } catch (error) {
         console.error('Error selling product:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-app.get('/getProductDetail/:ProId', async (req, res) => {
-    const ProId = req.params.ProId;
-    const result = await getProduct(ProId);
 
-    console.log(result);
-    res.send(result[0]);
-
-});
-app.get('/getProductImg/:ProId', async (req, res) => {
-    const ProId = req.params.ProId;
+app.get('/getProductDetail/:UserId/:ProductId', async (req, res) => {
+    const images=await get_ProImg(req.params.ProductId)
     try {
-        const result = await getProduct(ProId); // Assuming getProduct function retrieves product details including image filenames
-        const { Img1, Img2, Img3, Img4 } = result[0];
-
-        const imgDir = "C:\\Users\\Dell\\Desktop\\DBMS project\\PRO_IMG"; // Provide the directory path containing your images
-        const imgPaths = [Img1, Img2, Img3, Img4].filter(img => img); // Filter out undefined or empty image paths
-
-        // Send the images as an array of base64 strings
-        const images = [];
-        for (const imgPath of imgPaths) {
-            const imgPathFull = path.join(imgDir, imgPath);
-            const imgData = fs.readFileSync(imgPathFull);
-            const imgBase64 = imgData.toString('base64');
-            images.push(`data:image/png;base64,${imgBase64}`);
-        }
-        res.status(200).json(images);
-    } catch (err) {
-        console.error('Error fetching product images:', err);
+        const result = await getProduct(req.params.ProductId); 
+        const comments = await getReview(req.params.ProductId);
+        res.status(200).render('viewProduct.ejs',{'info':result[0],'images':images, 'comments':comments[0],'UserId':req.params.UserId});
+    }
+    catch (err) {
+        console.error('Error fetching product images');
         res.status(500).send('Internal Server Error');
     }
 });
+
+
 app.post('/createAddress', async (req, res) => {
-    const AdsId = uniqueIdGenerator(20);
-    const { Country, State, District, Street, HouseNo, Pincode, UserId } = req.body;
+    const AddressId = uniqueIdGenerator(20);
     try {
-        console.log(req.body);
-        const ans = await createAddress(AdsId, Country, State, District, Street, HouseNo, Pincode, UserId);
-        res.status(200).send(ans);
+        const ans = await createAddress(AddressId, req.body.Country, req.body.State, req.body.City, req.body.AddressLine1, req.body.AddressLine1, req.body.Pincode, req.body.UserId);
+        res.status(200).send('Address created');
     } catch (error) {
         console.error('Error creating user:', error);
         res.status(500).send('Internal Server Error');
     }
 });
-app.post('/getAddressFromUserId', async (req, res) => {
-    const { UserId } = req.body;
+
+async function getAddresses(UserId){
     try {
         const ans = await getAddressFromUserId(UserId);
-        console.log(ans[0]); // Log the addresses retrieved from the database
-        res.status(200).send(ans[0]);
+        return ans;
     } catch (error) {
-        console.error('Error fetching user addresses:', error);
-        res.status(500).send('Internal Server Error');
+        return null
     }
-});
-app.post('/createOrder',async (req,res)=>{
-    const OrdId = uniqueIdGenerator(20);
+};
+
+app.post('/OrderProducts',async (req,res)=>{
+    const OrderId = uniqueIdGenerator(20);
     const date = new Date();
-    const {AdsId,UserId}= req.body;
-    const result = await createOrder(OrdId,date,AdsId,UserId);
-    console.log(result);
-    res.send(result);
-});
-app.post('/getAllProductInOrder', async (req, res) => {
     try {
-        const { OrdId } = req.body;
-        console.log(OrdId);
-        const result = await getAllProductOfOrder(OrdId);
-        console.log(result[0]);
-        res.status(200).json(result[0]); // Send the orders data as JSON response
-    } catch (error) {
-        console.error('Error:', error.message);
-        res.status(500).send('Internal Server Error');
+    const ProductIds = req.body.productIds.split(',');
+    const Quantitys = req.body.quantities.split(',');
+    const Prices = req.body.prices.split(',');
+    let TotalAmount=0
+    for(let i=0;i<ProductIds.length;i++){
+        if(Quantitys[i]>0){
+        removeFromWishList(ProductIds[i]);
+        TotalAmount+=Prices[i]*Quantitys[i];
+        }
     }
+    const result = await createOrder(OrderId,date,req.body.AddressId.substring(1,21),req.body.UserId,TotalAmount);
+    for(let i=0;i<ProductIds.length;i++){
+        if(Quantitys[i]>0){
+            const result = await addProductToOrder(OrderId, ProductIds[i],Quantitys[i]);
+            console.log(result)
+        }
+    }
+    } catch (error) {
+    console.error('Error adding product to order:',error);
+    res.status(500);
+}
+    res.send('ok');
 });
+
 app.post('/getAllOrder', async (req, res) => {
     try {
         const { UserId } = req.body;
-        console.log(UserId);
         const result = await getAllOrders(UserId);
-        console.log(result[0]);
         res.status(200).json(result[0]); // Send the orders data as JSON response
     } catch (error) {
         console.error('Error:', error.message);
         res.status(500).send('Internal Server Error');
     }
 });
-app.post('/addProductToOrder', async (req, res) => {
-    try {
-        const { OrdId, ProId } = req.body;
-        console.log(OrdId+' '+ProId);
-        const result = await addProductToOrder(OrdId, ProId);
-        console.log("hihihi  "+result);
-        res.status(200).json({ success: true, message: 'Product added to order successfully' });
-    } catch (error) {
-        console.error('Error adding product to order:', error.message);
-        res.status(500).json({ success: false, message: 'Failed to add product to order. Please try again later.' });
+
+app.post('/addProductToWishList',async(req,res)=>{
+    try{
+        const product =await addProductToWishList(req.body.UserId,req.body.ProductId);
+        res.status(400).send('Added to Wish List');
+    }catch(error){
+        res.send('Altady in Wish List');
     }
 });
-app.listen(3000,()=>{
-    console.log("no 3000")
+
+app.post('/getWishList',async(req,res)=>{
+    try{
+        const products =await getWishList(req.body.UserId);
+        for(let i=0; i<products.length ; i++){
+            const images = await get_ProImg(products[i].ProductId)
+            products[i]={'info':products[i],'images':images}
+        }
+        res.render('viewWishList.ejs',{'products':  products,'UserId':req.body.UserId});
+    }catch(error){
+        res.send('no');
+    }
+});
+
+app.post('/addReview',async(req,res)=>{
+    try{
+        const ReviewId=uniqueIdGenerator(20);
+        const review =await addReview(ReviewId,req.body.UserId,req.body.ProductId,req.body.Comment,req.body.Ratting);
+        res.send('done');
+    }catch(error){
+        res.send('somthing went wrong');
+    }
+});
+
+app.listen(process.env.PORT,()=>{
+    console.log("easy buy started on port: "+process.env.PORT)
 
 });
 export default app;

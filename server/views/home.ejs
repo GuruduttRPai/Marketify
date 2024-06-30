@@ -1,57 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Product Details</title>
-  <style>
-    .product-details-container {
-      display: flex;
-      flex-wrap: wrap;
-    }
-    .product-details {
-      flex: 1 0 300px;
-      margin: 10px;
-      padding: 10px;
-      border: 1px solid #ccc;
-    }
-    .product-image {
-      width: 100%;
-      margin-bottom: 10px;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="home.css">
 </head>
 <body>
-  <div class="product-details-container" id="product-details-container"></div>
+  <nav class="navbar navbar-expand-lg" data-bs-theme="dark">
+    <div class="container-fluid">
+      <a class="navbar-brand">Buy instent</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarScroll">
+        <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+          <li class="nav-item">
+            <form action="/getWishList" method="post"><input type="text" name="UserId" value='<%=UserId%>' hidden><input class="nav-link" type="submit" value="WishList"></form>
+          </li>
+          <li class="nav-item">
+            <form action="/profile" method="post"><input type="text" name="UserId" value="<%=UserId%>" hidden><input type="submit" class="nav-link" value="Profile"></form>
+          </li>
+          <li class="nav-item">
+            <form action="/sell" method="post"><input type="submit" class="nav-link" value="Sell"></form>
+          </li>
+          
+        </ul>
+        <form action="\" method="post" class="d-flex">
+          <input type="text" name="type" value="User" hidden>
+          <input type="text" name="Id" value='<%=UserId%>' hidden>
+          
+          <select name="catagory" class="form-control me-1">
+            <%for(let catagory of catagoryes){%>
+              <option value='<%=catagory.CatogoryId%>'><%=catagory.CatName%></option>
+            <%}%>
+          </select>
+          <input type="submit" class="btn btn-outline-success">
+        </form>
+      </div>
+    </div>
+  </nav>
 
-  <script>
-    // Fetch product details from the API
-    fetch('http://localhost:3000/getAllProduct')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(products => {
-        const productDetailsContainer = document.getElementById('product-details-container');
-        products.forEach(product => {
-          const productDetailsHTML = `
-            <div class="product-details">
-              <h2>Product Details</h2>
-              <p><strong>Product ID:</strong> ${product.ProId}</p>
-              <p><strong>Seller ID:</strong> ${product.SellID}</p>
-              <p><strong>Description:</strong> ${product.Discription}</p>
-              <p><strong>Discount:</strong> ${product.Discount}</p>
-              <p><strong>Price:</strong> ${product.Price}</p>
-            </div>
-          `;
-          productDetailsContainer.innerHTML += productDetailsHTML;
-        });
-      })
-      .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-      });
-  </script>
+  <% if (products && products.length > 0) { %>
+    <div id="mainDiv" >
+      <% for (let item of products) { %>
+        <a href="/getProductDetail/<%=UserId%>/<%=item.info.ProductId%>">
+        <div class="item">
+          <%if(item.images.length>0){%><img src=<%=item.images[0]%>><%}else{%><img src="stacked-steps-haikei.svg"><%}%>
+          <h1><%= item.info.Name %></h1>
+          <p><%= item.info.Discription.substring(0,50) %></p>  <div class="item-inner-div">
+            <%if(item.info.Discount>0){%>
+              <h4>Price: <del><small><%= item.info.Price %></small></del> <%= item.info.Price *(1-item.info.Discount) %></h4>
+            <%} else{%>
+            <h4>Price:<%= item.info.Price %></h4>
+            <%}%>
+            <h4>Stock: <%= item.info.Stock %></h4>
+            <%if(item.info.Discount>0){%>
+              <h4>Discount: <%= item.info.Discount %>%</h4>
+            <%}%>
+          </div>
+          <h4>Seller ID: <%= item.info.SellerId %></h4>
+        </div></a>
+      <% } %>
+    </div>
+  <% } else { %>
+    <p>No products available.</p>
+  <% } %>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

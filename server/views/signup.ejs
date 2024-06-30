@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="login.css">
 </head>
 <body>
-    <div>
+    <div class="main_div">
         <h1>Sign Up</h1>
-        <form class="form" method="POST" action="/createUser">
+        <form method="POST" action="/createUser" class="main_form">
                 <input type="text" class="input" id="UserName" name="Name" placeholder="Name">
                 <input type="text" class="input" id="PhoneNumber" name="PhoneNo" placeholder="PhoneNumber">
                 <input type="text" class="input" id="Gender" name="Gender" placeholder="Gender">
@@ -18,7 +18,9 @@
                 <input type="email" class="input" id="Email" name="Email" placeholder="Email">
                 <input type="submit" value="Submit">
         </form>
-        <a href="/login">login</a>
+        <div class="link_div">
+            <a class="link" href="/login">login</a>
+        </div>
     </div>
 </body>
 </html>
