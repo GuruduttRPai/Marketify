@@ -157,8 +157,27 @@ h3{
 
   .subDiv{
     overflow-y: scroll;
-    max-height: 70vh;
+    max-height: 71vh;
   }
   .subDiv::-webkit-scrollbar{
     display: none;
   }
+
+
+
+  @media screen and (max-width: 1000px) {
+    body{
+        overflow-y: scroll;
+    }
+    .mainDiv{
+        flex-direction: column;
+
+    }
+    .subDiv{
+        min-height: 80vh;
+    }
+    .profile,.innerDiv{
+        min-width: 80vw;
+        min-height: 80vh;
+    }
+}

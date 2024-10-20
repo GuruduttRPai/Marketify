@@ -10,7 +10,7 @@
 <body>
   <nav class="navbar navbar-expand-lg" data-bs-theme="dark">
     <div class="container-fluid">
-      <a class="navbar-brand">Buy instent</a>
+      <a class="navbar-brand">Fun Finds</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -41,9 +41,10 @@
         <div class="item">
           <%if(item.images.length>0){%><img src=<%=item.images[0]%>><%}else{%><img src="stacked-steps-haikei.svg"><%}%>
           <h1><%= item.info.Name %></h1>
-          <p><%= item.info.Discription.substring(0,50) %></p>  <div class="item-inner-div">
+          <!--<p><%= item.info.Discription.substring(0,50) %></p>-->
+          <div class="item-inner-div">
             <%if(item.info.Discount>0){%>
-              <h4>Price: <del><small><%= item.info.Price %></small></del> <%= item.info.Price *(1-item.info.Discount) %></h4>
+              <h4>Price: <del><small><%= item.info.Price %></small></del> <%= (item.info.Price *(1-item.info.Discount)).toFixed(2) %></h4>
             <%} else{%>
             <h4>Price:<%= item.info.Price %></h4>
             <%}%>
@@ -52,7 +53,7 @@
               <h4>Discount: <%= item.info.Discount %>%</h4>
             <%}%>
           </div>
-          <h4>Seller ID: <%= item.info.SellerId %></h4>
+          <!--<h4>Seller ID: <%= item.info.SellerId %></h4>-->
         </div></a>
       <% } %>
     </div>

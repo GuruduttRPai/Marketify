@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #000000;
+            color: aliceblue;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: rgb(16, 16, 16);
+            padding: 40px;
+            margin: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgb(55, 55, 76);
+            width: 35vw;
+            height: 60vh;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: rgb(136, 177, 215)
+        }
+
+        form {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: rgb(136, 177, 215);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #434ac7;
+        }
+
+        button:disabled {
+            background-color: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .status {
+            display: none;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .status.success {
+            color: green;
+            display: block;
+        }
+
+        .status.error {
+            color: red;
+            display: block;
+        }
+
+        #createUserBtn {
+            display: none;
+            background-color: #48bb78;
+            margin-top: 20px;
+        }
+
+        #createUserBtn:hover {
+            background-color: #38a169;
+        }
+
+        #createUserBtn:disabled {
+            background-color: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content:center;
+        }
+
+        .button-container button {
+            width: 48%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Email OTP Verification</h2>
+        <form id="email-form">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email" required>
+            </div>
+            <div class="button-container">
+                <button type="button" id="sendEmailOtpBtn">Send OTP</button>
+            </div>
+            <div class="form-group">
+                <label for="emailOtp">Email OTP:</label>
+                <input type="text" id="emailOtp" name="emailOtp" required>
+            </div>
+            <button type="submit">Verify Email</button>
+            <p id="emailStatus" class="status"></p>
+        </form>
+    </div>
+    <div class="container">
+        <h2>Phone OTP Verification</h2>
+        <form id="phone-form">
+            <div class="form-group">
+                <label for="phoneNo">Phone Number:</label>
+                <input type="text" id="phoneNo" name="phoneNo" required>
+            </div>
+            <div class="button-container">
+                <button type="button" id="sendPhoneOtpBtn">Send OTP</button>
+            </div>
+            <div class="form-group">
+                <label for="phoneOtp">Phone OTP:</label>
+                <input type="text" id="phoneOtp" name="phoneOtp" required>
+            </div>
+            <button type="submit">Verify Phone</button>
+            <p id="phoneStatus" class="status"></p>
+        </form>
+    </div>
+    <form   method="POST" action="/signup">
+        <button type="submit" id="createUserBtn">Create User</button>
+        <input type="text" id="createUser_email" name="email" hidden>
+        <input type="text" id="createUser_phoneNo" name="phoneNo" hidden>
+    </form>
+
+    <script>
+        let emailVerified = false;
+        let phoneVerified = false;
+
+        function checkVerificationStatus() {
+            if (emailVerified && phoneVerified) {
+                document.getElementById('createUserBtn').style.display = 'block';
+            }
+        }
+
+        // Send Email OTP
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('sendEmailOtpBtn').addEventListener('click', async function() {
+                const email = document.getElementById('email').value;
+
+                if (!email) {
+                    alert('Please enter a valid email.');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/sendEmailOtp', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ Email: email })
+                    });
+
+                    if (response.ok) {
+                        alert('OTP sent to your email!');
+                    } else {
+                        alert('Failed to send OTP to your email.');
+                    }
+                } catch (error) {
+                    console.error('Error sending email OTP:', error);
+                }
+            });
+        });
+
+        // Send Phone OTP
+        document.getElementById('sendPhoneOtpBtn').addEventListener('click', async function() {
+            const phoneNo = document.getElementById('phoneNo').value;
+
+            if (!phoneNo) {
+                alert('Please enter a valid phone number.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/sendPhoneOtp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ PhoneNo: phoneNo })
+                });
+
+                if (response.status === 200) {
+                    alert('OTP sent to your phone!');
+                } else {
+                    alert('Failed to send OTP to your phone.');
+                }
+            } catch (error) {
+                console.error('Error sending phone OTP:', error);
+            }
+        });
+
+        // Function to verify email OTP
+        document.getElementById('email-form').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const email = document.getElementById('email').value;
+            const emailOtp = document.getElementById('emailOtp').value;
+
+            try {
+                const response = await fetch('/authenticateEmail', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, pass: emailOtp })
+                });
+
+                const emailStatus = document.getElementById('emailStatus');
+
+                if (response.status === 200) {
+
+                    const createUser_email = document.getElementById('createUser_email');
+                    createUser_email.value = email
+
+                    emailStatus.textContent = 'Email OTP Verified!';
+                    emailStatus.classList.remove('error');
+                    emailStatus.classList.add('success');
+                    emailVerified = true; // Mark email as verified
+                } else {
+
+                    emailStatus.textContent = 'Invalid Email OTP!';
+                    emailStatus.classList.remove('success');
+                    emailStatus.classList.add('error');
+                    emailVerified = false; // Mark email as not verified
+                }
+                
+                checkVerificationStatus(); // Check if both are verified
+            } catch (error) {
+                console.error('Error verifying email OTP:', error);
+            }
+        });
+
+        // Function to verify phone OTP
+        document.getElementById('phone-form').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const phoneNo = document.getElementById('phoneNo').value;
+            const phoneOtp = document.getElementById('phoneOtp').value;
+
+            try {
+                const response = await fetch('/authenticatePhone', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phoneNo, pass: phoneOtp })
+                });
+
+                const phoneStatus = document.getElementById('phoneStatus');
+
+                if (response.status === 200) {
+
+                    const createUser_phoneNo = document.getElementById('createUser_phoneNo');
+                    createUser_phoneNo.value = phoneNo
+
+                    phoneStatus.textContent = 'Phone OTP Verified!';
+                    phoneStatus.classList.remove('error');
+                    phoneStatus.classList.add('success');
+                    phoneVerified = true; // Mark phone as verified
+                } else {
+                    phoneStatus.textContent = 'Invalid Phone OTP!';
+                    phoneStatus.classList.remove('success');
+                    phoneStatus.classList.add('error');
+                    phoneVerified = false; // Mark phone as not verified
+                }
+
+                checkVerificationStatus(); // Check if both are verified
+            } catch (error) {
+                console.error('Error verifying phone OTP:', error);
+            }
+        });
+
+    </script>
+</body>
+</html>

@@ -174,3 +174,89 @@ export async function getProductsByCatagory(catagoryId){
         `,[catagoryId]);
     return result[0];
 }
+
+
+
+export async function PutEmailAuth(Email, pass) {
+    try {
+      const isIn = await pool.query('SELECT * FROM Email_auth WHERE Email = ?;', [Email]);
+  
+      if (isIn[0].length > 0) {
+        const updateResult = await pool.query('UPDATE Email_auth SET Pass = ? WHERE Email = ?;', [pass, Email]);
+        return updateResult[0];
+      } else {
+        const insertResult = await pool.query('INSERT INTO Email_auth VALUES (?,?,?);', [Email, pass, false]);
+        return insertResult[0];
+      }
+    } catch (error) {
+      console.error('Error in PutEmailAuth:', error);
+      throw error; // Re-throw the error for further handling
+    }
+  }
+
+
+export async function GetEmailAuth(Email){
+    try {
+        let auth = await pool.query('SELECT * FROM Email_auth WHERE Email = ?;', [Email]);
+
+        if (auth[0].length > 0) {
+            return auth;
+        }
+        else{
+            return {message:'not found'}
+        }
+    } catch (error) {
+        console.error(error);
+        return { message: 'Error occurred', error };
+    }
+}
+
+
+
+export async function setEmailVerified(Email) {
+    const updateResult = await pool.query('UPDATE Email_auth SET verified = ? WHERE Email = ?;', [true, Email]);
+    return updateResult[0];
+}
+
+
+
+
+export async function PutPhoneAuth(PhoneNo, pass) {
+    try {
+        let isIn = await pool.query('SELECT * FROM Phone_auth WHERE PhoneNo = ?;', [PhoneNo]);
+
+        if (isIn[0].length > 0) {
+            
+            const updateResult = await pool.query('UPDATE Phone_auth SET Pass = ? WHERE PhoneNo = ?;', [pass, PhoneNo]);
+            return updateResult[0];
+        } else {
+            
+            const insertResult = await pool.query('INSERT INTO Phone_auth (PhoneNo, Pass) VALUES (?,?,?);', [PhoneNo, pass, false]);
+            return insertResult[0];
+        }
+    } catch (error) {
+        console.error(error);
+        return { message: 'Error occurred', error };
+    }
+}
+
+export async function GetPhoneAuth(PhoneNo){
+    try {
+        let auth = await pool.query('SELECT * FROM Phone_auth WHERE PhoneNo = ?;', [PhoneNo]);
+        if (auth[0].length > 0) {
+            return auth;
+        }
+        else{
+            return {message:'not found'}
+        }
+    } catch (error) {
+        console.error(error);
+        return { message: 'Error occurred', error };
+    }
+}
+
+
+export async function setPhoneNoVerified(PhoneNo) {
+    const updateResult = await pool.query('UPDATE Phone_auth SET verified = ? WHERE PhoneNo = ?;', [true, PhoneNo]);
+    return updateResult[0];
+}

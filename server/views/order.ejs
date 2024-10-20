@@ -21,7 +21,7 @@
             <div class="tr">
               <h3>Product</h3>
               <h3>Quantity</h3>
-              <h3>Amount</h3>
+              <h3>Amount (in Rs)</h3>
             </div>
             <% for (product of products) {%>
               <hr>
@@ -32,9 +32,9 @@
                 <h3>
                   <input type="number" min="0" value="0" id="ProductQuantity_<%= product.ProductId %>"
                     onchange="updateProductPrice('<%= product.ProductId%>','<%= product.Price-product.Discount %>', this.value)">
-                </h3>
-                <h3 id="ProductAmount_<%= product.ProductId %>">
-                  0
+                 </h3>
+                <h3 id="ProductAmount_<%= product.ProductId %>">rs
+                  0 
                 </h3>
               </div>
               <% } %>

@@ -11,11 +11,11 @@
         <h1>Sign Up</h1>
         <form method="POST" action="/createUser" class="main_form">
                 <input type="text" class="input" id="UserName" name="Name" placeholder="Name">
-                <input type="text" class="input" id="PhoneNumber" name="PhoneNo" placeholder="PhoneNumber">
+                <input readonly type="text" class="input" id="PhoneNumber" name="PhoneNo" value= <%=phoneNo %>>
                 <input type="text" class="input" id="Gender" name="Gender" placeholder="Gender">
                 <input type="password" class="input" id="Password" name="Password" placeholder="Password">
                 <input type="text" class="input" id="DOB" name="DOB" placeholder="data of birth">
-                <input type="email" class="input" id="Email" name="Email" placeholder="Email">
+                <input readonly type="email" class="input" id="Email" name="Email" value= <%=email %> >
                 <input type="submit" value="Submit">
         </form>
         <div class="link_div">

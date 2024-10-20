@@ -1,7 +1,31 @@
+# Node.js modules
 server/node_modules/
-server/.env
+
 db/node_modules/
-db/.env
+
+# Environment variables
+
 /.env
-*.jpg\n*.jpeg\n*.png\n*.gif
+
+# Image files
+*.jpg
+*.jpeg
+*.png
+*.gif
 PRO_IMG/*
+
+# Generated files
+dist/
+build/
+
+# Local configuration
+.vscode/
+.editorconfig/
+
+# Database-specific files (adjust as needed)
+data/
+
+# Temporary files
+*.tmp
+*.log
+*.test

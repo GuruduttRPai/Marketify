@@ -1,112 +1,122 @@
-
-
 body {
-    height: 100vh;
-    background-size: cover;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-width: 30vw;
-    background-color: rgb(0, 0, 0)
-  }
-  
-  .navbar{
-    width: 90vw;
-    height: 10vh;
-    border-radius: 25px;
-    margin-bottom: 20px;
-    font-size: x-large;
-    font-weight: 600;
-    background-color:rgb(16, 16, 16);
-    box-shadow: 0 0 10px rgb(55, 55, 76);
-  }
-
-  .d-flex{
-    height: 60px;
-    width: 500px;
-  }
-
-  #mainDiv {
-    min-height: 80vh;
-    min-width: 90vw;
-    max-height: 80vh;
-    max-width: 90vw;
-    margin: 0 auto;
-    border-radius: 100px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 60px;
-    padding: 20px;
-    overflow: scroll;
-    background-color:rgb(0, 10, 19);
-    box-shadow: 0 0 10px rgb(55, 55, 76);
-  }
-
-  #mainDiv::-webkit-scrollbar{
-    display: none;
-  }
-
-  .item{
-    background-color: rgb(20, 20, 20);
-    color: rgb(216, 215, 215);
-    font-size: x-large;
-    min-width: 550px;
-    min-height: 450px;
-    max-width: 550px;
-    max-height: 450px;
-    border-radius: 50px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    background-size: cover;
-    margin: 5px;
-    text-align: center;
-    overflow: scroll;
-    box-shadow: 0 0 10px rgb(55, 55, 76);
-    scale: 0.95;
-  }
-  .item::-webkit-scrollbar{
-    display: none;
-  }
-  .item>h1{
-    max-height: min-content;
-    margin-bottom: 0px
-  }
-
-  p{
-    font-size: x-large;
-    font-weight:600;
-    max-width: 75%;
-  }
-
- .item-inner-div{
-    display: flex;
-    justify-content:space-evenly;
-    width: 100%;
-    border-radius: 500px;
-    padding: 0;
+  height: 100vh;
+  background-size: cover;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(0, 0, 0);
 }
 
-.item-inner-div>*{
-  margin: 3px;
+.navbar {
+  width: 90vw;
+  height: 10vh;
+  border-radius: 25px;
+  margin-bottom: 20px;
+  font-size: large;
+  font-weight: 600;
+  background-color: rgb(16, 16, 16);
+  box-shadow: 0 0 10px rgb(55, 55, 76);
 }
 
-a{
-  text-decoration: none;
-  max-height: min-content;
+.d-flex {
+  height: 50px;
+  width: 100%;
+  max-width: 500px;
 }
 
-.item>img{
-  min-width: 550px;
-  max-width: 550px;
-  min-height: 300px;
-  max-height: 300px;
+#mainDiv {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr); /* Default for mobile: 1 product per row */
+  gap: 20px;
+  padding: 20px;
+  min-height: 80vh;
+  min-width: 90vw;
+  max-height: 80vh;
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow-y: auto;
+  background-color: rgb(0, 10, 19);
+  box-shadow: 0 0 10px rgb(55, 55, 76);
 }
-.item:hover{
-  scale: 0.93;
+
+#mainDiv::-webkit-scrollbar {
+  display: none;
+}
+
+.item {
+  background-color: rgb(20, 20, 20);
+  color: rgb(216, 215, 215);
+  font-size: large;
+  width: 100%;
+  max-width: 300px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 0 10px rgb(55, 55, 76);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.item:hover {
+  transform: scale(1.05);
   box-shadow: 0 0 30px rgb(70, 70, 96);
+}
+
+.item img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.item-inner-div {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 10px;
+}
+
+.item-inner-div>* {
+  margin: 5px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Media Queries */
+@media (min-width: 576px) { /* Small devices (landscape phones) */
+  #mainDiv {
+      grid-template-columns: repeat(2, 1fr); /* 2 products per row */
+  }
+}
+
+@media (min-width: 768px) { /* Tablets */
+  #mainDiv {
+      grid-template-columns: repeat(2, 1fr); /* 2 products per row */
+  }
+
+  .item {
+      max-width: 350px;
+  }
+}
+
+@media (min-width: 1024px) { /* Laptops and desktops */
+  #mainDiv {
+      grid-template-columns: repeat(3, 1fr); /* 3 products per row */
+  }
+
+  .item {
+      max-width: 400px;
+  }
+
+  .item img {
+      max-height: 300px;
+  }
 }
