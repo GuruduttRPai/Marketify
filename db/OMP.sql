@@ -1,5 +1,6 @@
-drop database OMP;
-create database OMP;
+
+#drop database OMP;
+#create database OMP;
 use OMP;
 
 create table Users(
@@ -106,6 +107,19 @@ create table Payment(
     foreign key (OrderId) references Orders(OrderId)
 );
 
+
+create table Email_auth(
+	Email varchar(100) unique not null,
+    Pass varchar(6),
+    verified BOOLEAN DEFAULT false,
+    primary key(Email)
+);
+create table Phone_auth(
+	PhoneNo varchar(100) unique not null,
+    Pass int,
+    verified BOOLEAN DEFAULT false,
+    primary key(PhoneNo)
+);
 select * from Users;
 select * from Companies;
 select * from Products;
@@ -116,11 +130,12 @@ select * from Orders;
 select * from Orders_Products;
 select * from Catogorys;
 select * from Products_Catogorys;
-
+select * from Email_auth;
+select * from Phone_auth;
 select * from Orders where UserId='Sp7Fy9a84MhuF1RrcwfH';
 
 
-
+/*
 SELECT  SUM(op.Quantity) AS quantity
 FROM Orders o
 INNER JOIN Orders_Products op ON o.OrderId = op.OrderId
@@ -139,3 +154,4 @@ WHERE YEAR(o.Date) = YEAR(CURDATE())  -- Using CURDATE() for current year
   AND op.ProductId = 'Wpqj4EwiJGDi5OjpRQTn'
 GROUP BY YEAR(o.Date), MONTH(o.Date)
 ORDER BY YEAR(o.Date), MONTH(o.Date);
+*/
